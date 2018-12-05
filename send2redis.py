@@ -121,12 +121,23 @@ class MakeTopos(object):
             return True
 
 
-    def writefile(self):
+    def tofile(self):
         """Запись результатов в файл"""
         global fresult
         with open(fresult,"w") as f:
-            for a in self.a:
-                pass
+            for a in self.res.keys():
+                d = {}
+                d["aggr"] = a
+                d["nodes"] = list(self.res[a].nodes)
+                d["adges"] = list(self.res[a].edges)
+                f.write("{}\n".format(json.dumps(d)))
+                
+
+
+    def toredis(self):
+        """Запись результатов в redis хранилище"""
+        global r
+
 
 
 
@@ -141,4 +152,4 @@ if __name__ == '__main__':
     m=MakeTopos()
     m.mkgraphs()
     m.chkgraph()
-    print(m.res)
+    m.tofile()
