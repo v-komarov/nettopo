@@ -155,13 +155,13 @@ class MakeTopos(object):
             d["nodes"] = list(self.res[a].nodes)
             d["edges"] = list(self.res[a].edges)
             d["comments"] = [ "{}#{}".format(":".join(x),self.res[a][x[0]][x[1]]["comment"]) for x in self.res[a].edges]
-            r.set(a,json.dumps(d),3600)
+            r.set(a,json.dumps(d),3660)
             """Запись ссылок на адрес агрегатора"""
             for l in self.res[a].nodes:
                 if not a == l:
                     d = {}
                     d["aggr"] = a
-                    r.set(l,json.dumps(d),3600)
+                    r.set(l,json.dumps(d),3660)
 
 
 
