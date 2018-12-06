@@ -59,12 +59,12 @@ class TestMethod(unittest.TestCase):
 
     def test_redis_aggr(self):
         """Проверка записанных полей для данных по агрегатору"""
-        self.assertEqual(json.loads(r.get('55.17.0.11').decode())["aggr"],'55.17.0.11')
+        self.assertEqual(json.loads(r.get('55.17.0.19').decode())["aggr"],'55.17.0.11')
 
 
     def test_redis_aggr_link(self):
         """Проверка записанных полей для данных по сслыке на агрегатор"""
-        self.assertEqual(json.loads(r.get('55.17.0.10').decode())["aggr"],'55.17.0.11')
+        self.assertEqual(json.loads(r.get('55.17.2.32').decode())["aggr"],'55.17.0.11')
 
 
 
@@ -107,7 +107,7 @@ class MakeTopos(object):
         G = nx.Graph()
         for l in self.l:
             if self.chkaggr(l["address1"],l["port1"].strip()) and self.chkaggr(l["address2"],l["port2"].strip()):
-                G.add_edge(l["address1"],l["address2"],comment="{}:{}{}:{}".format(l["address1"],l["port1"],l["port2"],l["address2"]))
+                G.add_edge(l["address1"],l["address2"],comment="{}:{}&{}:{}".format(l["address1"],l["port1"],l["port2"],l["address2"]))
         self.g = list(nx.connected_component_subgraphs(G))
 
 
@@ -138,9 +138,7 @@ class MakeTopos(object):
             for a in self.res.keys():
                 d = {}
                 d["aggr"] = a
-                d["nodes"] = list(self.res[a].nodes)
-                d["edges"] = list(self.res[a].edges)
-                d["comments"] = [ "{}#{}".format(":".join(x),self.res[a][x[0]][x[1]]["comment"]) for x in self.res[a].edges]
+                d["data"] = nx.node_link_data(self.res[a])
                 f.write("{}\n".format(json.dumps(d)))
 
 
@@ -152,9 +150,7 @@ class MakeTopos(object):
             """Запись данных по агрегации"""
             d = {}
             d["aggr"] = a
-            d["nodes"] = list(self.res[a].nodes)
-            d["edges"] = list(self.res[a].edges)
-            d["comments"] = [ "{}#{}".format(":".join(x),self.res[a][x[0]][x[1]]["comment"]) for x in self.res[a].edges]
+            d["data"] = nx.node_link_data(self.res[a])
             r.set(a,json.dumps(d),3660)
             """Запись ссылок на адрес агрегатора"""
             for l in self.res[a].nodes:
@@ -176,5 +172,5 @@ if __name__ == '__main__':
     m=MakeTopos()
     m.mkgraphs()
     m.chkgraph()
-    #m.tofile()
+    m.tofile()
     m.toredis()
