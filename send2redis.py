@@ -57,6 +57,15 @@ class TestMethod(unittest.TestCase):
                 k[aggr] = [port,]
 
 
+    def test_redis_aggr(self):
+        """Проверка записанных полей для данных по агрегатору"""
+        self.assertEqual(json.loads(r.get('55.17.0.11').decode())["aggr"],'55.17.0.11')
+
+
+    def test_redis_aggr_link(self):
+        """Проверка записанных полей для данных по сслыке на агрегатор"""
+        self.assertEqual(json.loads(r.get('55.17.0.10').decode())["aggr"],'55.17.0.11')
+
 
 
 
@@ -139,7 +148,20 @@ class MakeTopos(object):
     def toredis(self):
         """Запись результатов в redis хранилище"""
         global r
-
+        for a in self.res.keys():
+            """Запись данных по агрегации"""
+            d = {}
+            d["aggr"] = a
+            d["nodes"] = list(self.res[a].nodes)
+            d["edges"] = list(self.res[a].edges)
+            d["comments"] = [ "{}#{}".format(":".join(x),self.res[a][x[0]][x[1]]["comment"]) for x in self.res[a].edges]
+            r.set(a,json.dumps(d),3600)
+            """Запись ссылок на адрес агрегатора"""
+            for l in self.res[a].nodes:
+                if not a == l:
+                    d = {}
+                    d["aggr"] = a
+                    r.set(l,json.dumps(d),3600)
 
 
 
@@ -154,4 +176,5 @@ if __name__ == '__main__':
     m=MakeTopos()
     m.mkgraphs()
     m.chkgraph()
-    m.tofile()
+    #m.tofile()
+    m.toredis()
