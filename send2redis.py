@@ -6,6 +6,7 @@ import unittest
 import json
 import networkx as nx
 import conf
+import pickle
 
 ### Redis 
 redis_host = conf.redis_host
@@ -48,7 +49,7 @@ class TestMethod(unittest.TestCase):
         k = {}
         for line in j:
             d = json.loads(line)
-            aggr = d["address1"] # Адрес агрегатора
+            aggr = d["address1"].strip() # Адрес агрегатора
             port = d["port1"].strip() # Порт агрегатора
             if aggr in k:
                 k[aggr].append(port)
@@ -97,7 +98,7 @@ class MakeTopos(object):
         G = nx.Graph()
         for l in self.l:
             if self.chkaggr(l["address1"],l["port1"].strip()) and self.chkaggr(l["address2"],l["port2"].strip()):
-                G.add_edge(l["address1"],l["address2"])
+                G.add_edge(l["address1"],l["address2"],comment="{}:{}{}:{}".format(l["address1"],l["port1"],l["port2"],l["address2"]))
         self.g = list(nx.connected_component_subgraphs(G))
 
 
@@ -129,9 +130,10 @@ class MakeTopos(object):
                 d = {}
                 d["aggr"] = a
                 d["nodes"] = list(self.res[a].nodes)
-                d["adges"] = list(self.res[a].edges)
+                d["edges"] = list(self.res[a].edges)
+                d["comments"] = [ "{}#{}".format(":".join(x),self.res[a][x[0]][x[1]]["comment"]) for x in self.res[a].edges]
                 f.write("{}\n".format(json.dumps(d)))
-                
+
 
 
     def toredis(self):
