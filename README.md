@@ -11,3 +11,4 @@ python3.6 -m pip install networkx
 - **links.json** Пример данных связей между коммутаторами
 - **aggregations.json** Пример данных по агрегаторам
 - **conf.py** Конфигурационный файл
+- **fresult.json** Пример файла результатов
