@@ -1,0 +1,18 @@
+[Unit]
+Description=topodata
+After=network.target
+
+[Service]
+PIDFile=/run/gunicorn/pid
+User=root
+WorkingDirectory=/srv/nettopo
+RuntimeDirectory=gunicorn
+ExecStart=/usr/local/bin/gunicorn -b 0.0.0.0:8080 --workers 10 --chdir /srv/nettopo topodata:app
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=on-failure
+RestartSec=10s
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

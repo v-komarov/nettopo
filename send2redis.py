@@ -172,5 +172,5 @@ if __name__ == '__main__':
     m=MakeTopos()
     m.mkgraphs()
     m.chkgraph()
-    m.tofile()
+    #m.tofile()
     m.toredis()

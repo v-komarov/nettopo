@@ -4,6 +4,7 @@
 ```
 python3.6 -m pip install redis
 python3.6 -m pip install networkx
+python3.6 -m pip install gunicorn
 
 ```
 
@@ -12,6 +13,8 @@ python3.6 -m pip install networkx
 - **aggregations.json** Пример данных по агрегаторам
 - **conf.py** Конфигурационный файл
 - **fresult.json** Пример файла результатов
+- **topodata.service** - конфиг для создания службы systemd
+- **topodata.py** - Реализация web службы поиска агрегации по ip адресу (выдает граф агрегации в json формате)
 
 **Порядок работы** 
 
