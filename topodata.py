@@ -28,7 +28,7 @@ def aggr(ip):
             """Поиск агрегатора"""
             return r.get(json.loads(result)["aggr"]).decode()
     else:
-        return "error"
+        return json.dumps({"result":"error"})
 
 
 
@@ -40,7 +40,7 @@ def topo():
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-
+    response.content_type = 'application/json'
 
     return "{}".format(aggr(ip))
 
