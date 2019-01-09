@@ -5,6 +5,9 @@ import redis
 import json
 import conf
 import networkx as nx
+import sys
+
+from segment import get_segment
 
 ### Redis 
 redis_host = conf.redis_host
@@ -22,11 +25,19 @@ def aggr(ip):
         
         if json.loads(result)["aggr"] == ip:
             """Агрегатор найден сразу"""
-            return result.decode()
+            data = json.loads(result.decode())
+            data["segment"] = {}
+            data["picture"] = ""
+            return data
         
         else:
             """Поиск агрегатора"""
-            return r.get(json.loads(result)["aggr"]).decode()
+            d = r.get(json.loads(result)["aggr"]).decode()
+            seg = get_segment(d,ip)
+            data = json.loads(d)
+            data["segment"] = nx.node_link_data(seg)
+            data["picture"] = ""
+            return data
     else:
         return json.dumps({"result":"error"})
 
