@@ -2,7 +2,7 @@
 import unittest
 import networkx as nx
 import pickle
-import matplotlib as plt
+from graphviz import Graph
 
 
 
@@ -22,7 +22,14 @@ class TestMethod(unittest.TestCase):
         with open('segment.pickle', 'rb') as f:
             G = pickle.load(f)
 
+            g = Graph()
+            for e in G.edges:
+                g.edge(e[0],e[1])
+                
+            Graph.draw('pic.png')
 
+            #pos = nx.spring_layout(G)
+            #nx.draw(G,pos)
 
 
 
