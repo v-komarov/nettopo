@@ -5,6 +5,7 @@ import json
 import conf
 import networkx as nx
 import sys
+import pickle
 
 
 
@@ -80,7 +81,10 @@ class TestMethod(unittest.TestCase):
         segment_list.append(ag)
         SEG = GG.subgraph(segment_list)
         print(SEG.nodes)
+        with open('segment.pickle', 'wb') as f:
+            pickle.dump(SEG,f)
         self.assertNotEqual(len(list(SEG.nodes)),0)
+
 
 
 
