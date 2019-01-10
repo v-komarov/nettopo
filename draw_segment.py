@@ -26,10 +26,10 @@ class TestMethod(unittest.TestCase):
             for e in G.edges:
                 g.edge(e[0],e[1])
                 
-            Graph.draw('pic.png')
+            #Graph.draw('pic.png')
 
-            #pos = nx.spring_layout(G)
-            #nx.draw(G,pos)
+            pos = nx.spring_layout(G)
+            nx.draw(G,pos)
 
 
 

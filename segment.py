@@ -54,7 +54,9 @@ class TestMethod(unittest.TestCase):
         redis_host = conf.redis_host
         redis_port = conf.redis_port
         self.r = redis.StrictRedis(host=redis_host, port=redis_port, db=0)
-    
+
+    def tearDown(self):
+        pass
 
 
     def test_redis(self):
@@ -71,7 +73,6 @@ class TestMethod(unittest.TestCase):
 
     def test_segment(self):
         """Проверка выделения сегмента по ip адресу"""
-        #r = redis_obj()
         aggr = json.loads(self.r.get('55.17.0.19').decode())
         G = nx.node_link_graph(aggr["data"])
         GG = nx.node_link_graph(aggr["data"])
