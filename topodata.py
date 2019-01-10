@@ -26,20 +26,22 @@ def aggr(ip):
         if json.loads(result)["aggr"] == ip:
             """Агрегатор найден сразу"""
             data = json.loads(result.decode())
+            data["result"] = "ok"
             data["ip"] = ip
             data["segment"] = {}
             data["picture"] = ""
-            return data
+            return json.dumps(data)
         
         else:
             """Поиск агрегатора"""
             d = r.get(json.loads(result)["aggr"]).decode()
             seg = get_segment(d,ip)
             data = json.loads(d)
+            data["result"] = "ok"
             data["ip"] = ip
             data["segment"] = nx.node_link_data(seg)
             data["picture"] = ""
-            return data
+            return json.dumps(data)
     else:
         return json.dumps({"result":"error"})
 

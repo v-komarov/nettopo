@@ -48,25 +48,31 @@ def get_segment(data,ip):
 class TestMethod(unittest.TestCase):
 
 
+    def setUp(self):
+
+        ### Redis 
+        redis_host = conf.redis_host
+        redis_port = conf.redis_port
+        self.r = redis.StrictRedis(host=redis_host, port=redis_port, db=0)
+    
+
 
     def test_redis(self):
         """Проверка записи - чтения ключа"""
-        r = redis_obj()
-        r.set('test','xxxxxxxxxxxxxxx',60)
-        self.assertEqual(r.get('test').decode(),'xxxxxxxxxxxxxxx')
+        self.r.set('test','xxxxxxxxxxxxxxx',60)
+        self.assertEqual(self.r.get('test').decode(),'xxxxxxxxxxxxxxx',"Нет связи с Redis сервером")
 
 
     def test_data(self):
         """Проверка наличия данных для теста"""
-        r = redis_obj()
-        aggr = json.loads(r.get('55.17.0.19').decode())
-        self.assertIs(type(aggr),type(dict()))
+        aggr = json.loads(self.r.get('55.17.0.19').decode())
+        self.assertIs(type(aggr),type(dict()),"Данные для теста отсутствуют или не корректны")
 
 
     def test_segment(self):
         """Проверка выделения сегмента по ip адресу"""
-        r = redis_obj()
-        aggr = json.loads(r.get('55.17.0.19').decode())
+        #r = redis_obj()
+        aggr = json.loads(self.r.get('55.17.0.19').decode())
         G = nx.node_link_graph(aggr["data"])
         GG = nx.node_link_graph(aggr["data"])
         ag = aggr["aggr"] ### Адрес агрегатора
@@ -83,7 +89,7 @@ class TestMethod(unittest.TestCase):
         print(SEG.nodes)
         with open('segment.pickle', 'wb') as f:
             pickle.dump(SEG,f)
-        self.assertNotEqual(len(list(SEG.nodes)),0)
+        self.assertNotEqual(len(list(SEG.nodes)),0,"Не создана структура сегмента сети")
 
 
 
