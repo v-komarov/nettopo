@@ -27,13 +27,13 @@ def get_svg(G,ip,aggr):
             node = pydot.Node(n, style="filled", fillcolor=color)
             g.add_node(node)
 
-        for e in G.edges:
-            g.add_edge(pydot.Edge(e[0],e[1], label= comments[(e[0],e[1])]))
+    for e in G.edges:
+        g.add_edge(pydot.Edge(e[0],e[1], label= comments[(e[0],e[1])]))
 
     svg = g.create_svg()
 
-    #return svg.decode()
-    return "data: image/png;base64,{}".format(base64.b64encode(svg))
+    return svg.decode()
+    #return "data: image/svg+xml;base64,{}".format(base64.b64encode(svg))
 
 
 
@@ -70,7 +70,7 @@ class TestMethod(unittest.TestCase):
             for e in G.edges:
                 g.add_edge(pydot.Edge(e[0],e[1], label= comments[(e[0],e[1])]))
             
-            #g.write_svg('test.svg')
+            g.write_svg('test.svg')
             svg = g.create_svg()
             print(svg.decode())
 
