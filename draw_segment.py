@@ -2,13 +2,44 @@
 import unittest
 import networkx as nx
 import pickle
-from graphviz import Graph
+import pydot
+import base64
+
+
+
+
+
+def get_svg(G,ip,aggr):
+    """Создание картинки в формате svg"""
+
+    comments = nx.get_edge_attributes(G, 'comment')
+    g = pydot.Dot(graph_type='graph')
+
+    for n in G.nodes:
+
+        if n == ip:
+            color = "#E6E6FA"
+        elif n == aggr:
+            color = "#FFEBCD"
+        else:
+            color = "#F1F0F0"
+
+            node = pydot.Node(n, style="filled", fillcolor=color)
+            g.add_node(node)
+
+        for e in G.edges:
+            g.add_edge(pydot.Edge(e[0],e[1], label= comments[(e[0],e[1])]))
+
+    svg = g.create_svg()
+
+    #return svg.decode()
+    return "data: image/png;base64,{}".format(base64.b64encode(svg))
+
+
 
 
 
 class TestMethod(unittest.TestCase):
-
-
 
     def test_segment(self):
         """Проверка чтения сегмента"""
@@ -22,14 +53,26 @@ class TestMethod(unittest.TestCase):
         with open('segment.pickle', 'rb') as f:
             G = pickle.load(f)
 
-            g = Graph()
-            for e in G.edges:
-                g.edge(e[0],e[1])
+            comments = nx.get_edge_attributes(G, 'comment')
+            g = pydot.Dot(graph_type='graph')
+            for n in G.nodes:
                 
-            #Graph.draw('pic.png')
-
-            pos = nx.spring_layout(G)
-            nx.draw(G,pos)
+                if n == "55.17.2.32":
+                    color = "#E6E6FA"
+                elif n == "55.17.0.19":
+                    color = "#FFEBCD"
+                else:
+                    color = "#F1F0F0"
+                
+                node = pydot.Node(n, style="filled", fillcolor=color)                    
+                g.add_node(node)
+                
+            for e in G.edges:
+                g.add_edge(pydot.Edge(e[0],e[1], label= comments[(e[0],e[1])]))
+            
+            #g.write_svg('test.svg')
+            svg = g.create_svg()
+            print(svg.decode())
 
 
 

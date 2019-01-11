@@ -8,6 +8,7 @@ import networkx as nx
 import sys
 
 from segment import get_segment
+from draw_segment import get_svg
 
 ### Redis 
 redis_host = conf.redis_host
@@ -40,7 +41,7 @@ def aggr(ip):
             data["result"] = "ok"
             data["ip"] = ip
             data["segment"] = nx.node_link_data(seg)
-            data["picture"] = ""
+            data["picture"] = get_svg(seg,ip,json.loads(result)["aggr"])
             return json.dumps(data)
     else:
         return json.dumps({"result":"error"})
